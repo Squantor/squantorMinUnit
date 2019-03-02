@@ -22,7 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#include <stdio.h>
 #include <sqMinUnitC.h>
+
 
 int tests_run = 0;
 int asserts_run = 0;
@@ -42,6 +44,8 @@ int test002()
 
 int main(int argc, char *argv[])
 {
+    for(int i = 0; i < 10; i++)
+        printf("hello World %d\n", i);
     mu_run_test(test001);
     mu_run_test(test002);
     return 0;
