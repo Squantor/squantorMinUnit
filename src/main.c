@@ -22,7 +22,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#include <sqMinUnitC.h>
+
+int tests_run = 0;
+int asserts_run = 0;
+
+int test001()
+{
+    mu_assert(1 == 1);
+    return 1;
+}
+
+int test002()
+{
+    mu_assert(1 == 0);
+    return 1;
+}
+
+
 int main(int argc, char *argv[])
 {
+    mu_run_test(test001);
+    mu_run_test(test002);
     return 0;
 }

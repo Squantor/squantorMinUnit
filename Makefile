@@ -7,11 +7,11 @@ include src/Makefile.mk
 
 INCLUDES += 
 LIBDIR += 
-LIBS +=
-RLIBDIR += $(LIBDIR)
-RLIBS += $(LIBS)
-DLIBDIR += $(LIBDIR)
-DLIBS += $(LIBS)
+ALIBS +=
+RLIBS += 
+DLIBS += 
+RLIBDIR +=
+DLIBDIR +=
 
 # Toolchain settings
 MAKE = make
@@ -57,12 +57,12 @@ release: export CFLAGS := $(COMPILE_C_FLAGS) $(C_RELEASE_COMPILE_FLAGS) $(DEFINE
 release: export CXXFLAGS := $(COMPILE_CXX_FLAGS) $(CXX_RELEASE_COMPILE_FLAGS) $(DEFINES_RELEASE) $(DEFINES)
 release: export ASMFLAGS := $(COMPILE_ASM_FLAGS) $(ASM_RELEASE_COMPILE_FLAGS) $(DEFINES_RELEASE) $(DEFINES)
 release: export LDFLAGS := $(LINK_FLAGS) $(LINK_FLAGS_RELEASE) $(LIBDIR) $(RLIBDIR) $(LDSCRIPT)
-release: export LIBS := $(LIBS) $(RLIBS)
+release: export LIBS := $(ALIBS) $(RLIBS)
 debug: export CFLAGS := $(COMPILE_C_FLAGS) $(C_DEBUG_COMPILE_FLAGS) $(DEFINES_DEBUG) $(DEFINES)
 debug: export CXXFLAGS := $(COMPILE_CXX_FLAGS) $(CXX_DEBUG_COMPILE_FLAGS) $(DEFINES_DEBUG) $(DEFINES)
 debug: export ASMFLAGS := $(COMPILE_ASM_FLAGS) $(ASM_DEBUG_COMPILE_FLAGS) $(DEFINES_DEBUG) $(DEFINES)
 debug: export LDFLAGS := $(LINK_FLAGS) $(LINK_FLAGS_DEBUG) $(LIBDIR) $(DLIBDIR) $(LDSCRIPT)
-debug: export LIBS := $(LIBS) $(DLIBS)
+debug: export LIBS := $(ALIBS) $(DLIBS)
 
 # Build and output paths
 release: export BUILD_PATH := build/$(PLATFORM)/release
