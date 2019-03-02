@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="squantorMinUnitC" Version="10.0.0" InternalType="">
+  <VirtualDirectory Name="inc">
+    <File Name="inc/sqMinUnitC.h"/>
+  </VirtualDirectory>
   <VirtualDirectory Name="src">
     <File Name="src/main.c"/>
   </VirtualDirectory>
