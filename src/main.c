@@ -44,8 +44,6 @@ int test002()
 
 int main(int argc, char *argv[])
 {
-    for(int i = 0; i < 10; i++)
-        printf("hello World %d\n", i);
     mu_run_test(test001);
     mu_run_test(test002);
     return 0;

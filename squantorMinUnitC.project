@@ -2,9 +2,30 @@
 <CodeLite_Project Name="squantorMinUnitC" Version="10.0.0" InternalType="">
   <VirtualDirectory Name="inc">
     <File Name="inc/sqMinUnitC.h"/>
+    <VirtualDirectory Name="rt0">
+      <File Name="inc/rt0/syscall.h"/>
+      <File Name="inc/rt0/sys64.h"/>
+      <File Name="inc/rt0/rt0.h"/>
+    </VirtualDirectory>
   </VirtualDirectory>
   <VirtualDirectory Name="src">
+    <File Name="src/sys1.c"/>
+    <File Name="src/_end.c"/>
+    <File Name="src/sbrk.c"/>
+    <File Name="src/test.c"/>
+    <File Name="src/hello.c"/>
+    <File Name="src/envp.c"/>
+    <File Name="src/null.c"/>
     <File Name="src/main.c"/>
+    <File Name="src/syscall.c"/>
+    <File Name="src/argc.c"/>
+    <File Name="src/sys3.c"/>
+    <File Name="src/threads.c"/>
+    <File Name="src/00_start.c"/>
+    <File Name="src/argv.c"/>
+    <File Name="src/_exit.c"/>
+    <File Name="src/sys2.c"/>
+    <File Name="src/sys0.c"/>
   </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">

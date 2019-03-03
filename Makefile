@@ -5,11 +5,11 @@ include platforms/$(PLATFORM).mk
 # load project settings
 include src/Makefile.mk
 
-INCLUDES += 
-LIBDIR += 
+INCLUDES +=
+LIBDIR +=
 ALIBS +=
-RLIBS += 
-DLIBS += 
+RLIBS +=
+DLIBS +=
 RLIBDIR +=
 DLIBDIR +=
 
@@ -19,6 +19,7 @@ MKDIR = mkdir
 RM = rm
 C_COMPILER = gcc
 CXX_COMPILER = g++
+LINKER = ld
 GDB = gdb
 SIZE = size
 AR = ar
@@ -26,9 +27,9 @@ OBJDUMP = objdump
 OBJCOPY = objcopy
 
 # Toolchain flags
-COMPILE_C_FLAGS += 
-COMPILE_CXX_FLAGS += 
-COMPILE_ASM_FLAGS += 
+COMPILE_C_FLAGS +=
+COMPILE_CXX_FLAGS +=
+COMPILE_ASM_FLAGS +=
 DEFINES +=
 DEFINES_RELEASE = -DNDEBUG
 DEFINES_DEBUG = -DDEBUG
@@ -36,13 +37,13 @@ C_RELEASE_COMPILE_FLAGS = -Os -g
 C_DEBUG_COMPILE_FLAGS = -Og -g3 
 CXX_RELEASE_COMPILE_FLAGS = -Os -g 
 CXX_DEBUG_COMPILE_FLAGS = -Og -g3
-ASM_RELEASE_COMPILE_FLAGS = 
+ASM_RELEASE_COMPILE_FLAGS =
 ASM_DEBUG_COMPILE_FLAGS = -g3
 
-LINK_FLAGS += 
-LINK_FLAGS_RELEASE =
-LINK_FLAGS_DEBUG =
-LDSCRIPT = 
+LINK_FLAGS +=
+LINK_FLAGS_RELEASE +=
+LINK_FLAGS_DEBUG +=
+LDSCRIPT =
 
 # Clear built-in rules
 .SUFFIXES:
@@ -103,12 +104,12 @@ clean:
 	$(RM) -r build
 	$(RM) -r bin
 
-# Main rule, checks the executable and symlinks to the output
+# Main rule
 all: $(BIN_PATH)/$(BIN_NAME).elf
 
 # create the executable
 $(BIN_PATH)/$(BIN_NAME).elf: $(OBJECTS)
-	$(TOOLCHAIN_PREFIX)$(CXX_COMPILER) $(LDFLAGS) $(OBJECTS) -Xlinker -Map="$@.map" -o $@ $(LIBS)
+	$(TOOLCHAIN_PREFIX)$(LINKER) $(LDFLAGS) $(OBJECTS) -Map="$@.map" -o $@ $(LIBS)
 	date >> size$(BUILD_TARGET).log
 	$(TOOLCHAIN_PREFIX)$(SIZE) $@ >> size$(BUILD_TARGET).log
 	$(TOOLCHAIN_PREFIX)$(SIZE) $@
