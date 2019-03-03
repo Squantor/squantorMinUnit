@@ -83,13 +83,13 @@ OBJECTS += $(S_SOURCES:%.s=$(BUILD_PATH)/%.s.o)
 # Set the dependency files that will be used to add header dependencies
 DEPS = $(OBJECTS:.o=.d)
 
-# Standard, non-optimized release build
-release: dirs
+# Standard, optimized and stripped release build
+release: dirs Makefile ./src/Makefile.mk
 	# make lpc_chip library if needed
 	$(MAKE) all --no-print-directory
 
-# Debug build for gdb debugging
-debug: dirs
+# unoptimized build with debug information
+debug: dirs Makefile ./src/Makefile.mk
 	$(MAKE) all --no-print-directory
 
 # Create the directories used in the build
@@ -122,15 +122,15 @@ $(BIN_PATH)/$(BIN_NAME).elf: $(OBJECTS)
 # After the first compilation they will be joined with the rules from the
 # dependency files to provide header dependencies
 # if the source file is in a subdir, create this subdir in the build dir
-$(BUILD_PATH)/%.c.o: ./%.c
+$(BUILD_PATH)/%.c.o: ./%.c Makefile ./src/Makefile.mk
 	$(MKDIR) -p $(dir $@) 
 	$(TOOLCHAIN_PREFIX)$(C_COMPILER) $(CFLAGS) $(INCLUDES) -MP -MMD -c $< -o $@
 
-$(BUILD_PATH)/%.cpp.o: ./%.cpp
+$(BUILD_PATH)/%.cpp.o: ./%.cpp Makefile ./src/Makefile.mk
 	$(MKDIR) -p $(dir $@) 
 	$(TOOLCHAIN_PREFIX)$(CXX_COMPILER) $(CXXFLAGS) $(INCLUDES) -MP -MMD -c $< -o $@
 
-$(BUILD_PATH)/%.s.o: ./%.s
+$(BUILD_PATH)/%.s.o: ./%.s Makefile ./src/Makefile.mk
 	$(MKDIR) -p $(dir $@) 
 	$(TOOLCHAIN_PREFIX)$(C_COMPILER) $(ASMFLAGS) $(INCLUDES) -MP -MMD -c $< -o $@
 
