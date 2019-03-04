@@ -33,7 +33,11 @@ No dependencies on anything and minimal facilities
 #define SQMINUNITC_H
 
 #ifndef NULL
-# define NULL ((void*)0)
+# ifndef __cplusplus
+#  define NULL ((void *)0)
+# else
+# define NULL 0
+# endif
 #endif
 
 /*  Test setup and teardown function pointers */
