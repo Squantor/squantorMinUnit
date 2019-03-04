@@ -24,14 +24,63 @@ SOFTWARE.
 /*
 Minimal C unittesting framework, inspired by:
 http://www.jera.com/techinfo/jtns/jtn002.html
+Further inspired by:
+https://github.com/siu/minunit
+
+No dependencies on anything and minimal facilities
 */
 #ifndef SQMINUNITC_H
 #define SQMINUNITC_H
 
-#define mu_assert(test) do { if (!(test)) return 0; else asserts_run++; } while (0)
-#define mu_run_test(test) do { int result = test(); if(result == 0) return 0; \
-    else tests_run++;} while (0)
-extern int tests_run;
-extern int asserts_run;
+/*  Test setup and teardown function pointers */
+static void (*minunit_setup)(void) = NULL;
+static void (*minunit_teardown)(void) = NULL;
+
+/* global test run tracking variables */
+extern int minunitRun; /* tests run */
+extern int minunitFailures; /* tests failed */
+extern int minunitAsserts; /* asserts run */
+/* test suite status tracking */
+static int minunitStatus = 0;
+
+/*  Definitions */
+#define MU_TEST(method_name) static void method_name(void)
+#define MU_TEST_SUITE(suite_name) static void suite_name(void)
+
+#define MU__SAFE_BLOCK(block) do {\
+    block\
+} while(0)
+
+/*  Run test suite and unset setup and teardown functions */
+#define MU_RUN_SUITE(suite_name) MU__SAFE_BLOCK(\
+    suite_name();\
+    minunit_setup = NULL;\
+    minunit_teardown = NULL;\
+)
+
+/*  Configure setup and teardown functions */
+#define MU_SUITE_CONFIGURE(setup_fun, teardown_fun) MU__SAFE_BLOCK(\
+    minunit_setup = setup_fun;\
+    minunit_teardown = teardown_fun;\
+)
+
+/*  Test runner */
+#define MU_RUN_TEST(test) MU__SAFE_BLOCK(\
+    if (minunit_setup) (*minunit_setup)();\
+    minunitStatus = 0;\
+    test();\
+    minunitRun++;\
+    if (minunitStatus) minunitFailures++;\
+    if (minunit_teardown) (*minunit_teardown)();\
+)
+
+/*  Assertions */
+#define mu_check(test) MU__SAFE_BLOCK(\
+    minunitAsserts++;\
+    if (!(test)) {\
+        minunitStatus = 1;\
+        return;\
+    }\
+)
 
 #endif

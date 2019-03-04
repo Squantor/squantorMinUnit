@@ -29,22 +29,9 @@ SOFTWARE.
 int tests_run = 0;
 int asserts_run = 0;
 
-int test001()
-{
-    mu_assert(1 == 1);
-    return 1;
-}
-
-int test002()
-{
-    mu_assert(1 == 0);
-    return 1;
-}
-
-
 int main(int argc, char *argv[])
 {
-    mu_run_test(test001);
-    mu_run_test(test002);
+    // print statistics
+    
     return 0;
 }
