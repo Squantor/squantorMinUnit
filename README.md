@@ -43,9 +43,13 @@ This makes it possible to spread out your test suites over multiple files.
 Building happens with make. Just invoking make will compile the PC target in release mode. Using the ```PLATFORM=``` on the commandline you can specify what platform to compile for, valid options are:
 * ```PC```, just any PC with gcc and libc
 * ```bare_PC```, just has gcc and works only in linux (tested on ubuntu 18.04) and uses syscalls to print something
+
 The reason for the bare_PC target is I wanted something barebones on my development machine that resembles an embedded target library wise. 
+
 Example debug build command for PC target:
+
 ```make PLATFORM=PC debug```
+
 Binaries are placed in the bin directory.
 ## limitations
 None found, yet. Please report if you encounter issues.
