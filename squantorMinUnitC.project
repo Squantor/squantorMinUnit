@@ -6,9 +6,11 @@
     </Plugin>
   </Plugins>
   <VirtualDirectory Name="inc">
+    <File Name="inc/tests1.h"/>
     <File Name="inc/sqMinUnitC.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="src">
+    <File Name="src/tests1.c"/>
     <File Name="src/main.c"/>
   </VirtualDirectory>
   <Description/>

@@ -32,9 +32,13 @@ No dependencies on anything and minimal facilities
 #ifndef SQMINUNITC_H
 #define SQMINUNITC_H
 
+#ifndef NULL
+# define NULL ((void*)0)
+#endif
+
 /*  Test setup and teardown function pointers */
-static void (*minunit_setup)(void) = NULL;
-static void (*minunit_teardown)(void) = NULL;
+static void (*minunitSetup)(void) = NULL;
+static void (*minunitTeardown)(void) = NULL;
 
 /* global test run tracking variables */
 extern int minunitRun; /* tests run */
@@ -44,34 +48,34 @@ extern int minunitAsserts; /* asserts run */
 static int minunitStatus = 0;
 
 /*  Definitions */
-#define MU_TEST(method_name) static void method_name(void)
-#define MU_TEST_SUITE(suite_name) static void suite_name(void)
+#define MU_TEST(methodName) static void methodName(void)
+#define MU_TEST_SUITE(suiteName) static void suiteName(void)
 
 #define MU__SAFE_BLOCK(block) do {\
     block\
 } while(0)
 
 /*  Run test suite and unset setup and teardown functions */
-#define MU_RUN_SUITE(suite_name) MU__SAFE_BLOCK(\
-    suite_name();\
-    minunit_setup = NULL;\
-    minunit_teardown = NULL;\
+#define MU_RUN_SUITE(suiteName) MU__SAFE_BLOCK(\
+    suiteName();\
+    minunitSetup = NULL;\
+    minunitTeardown = NULL;\
 )
 
 /*  Configure setup and teardown functions */
-#define MU_SUITE_CONFIGURE(setup_fun, teardown_fun) MU__SAFE_BLOCK(\
-    minunit_setup = setup_fun;\
-    minunit_teardown = teardown_fun;\
+#define MU_SUITE_CONFIGURE(setupFun, teardownFun) MU__SAFE_BLOCK(\
+    minunitSetup = setupFun;\
+    minunitTeardown = teardownFun;\
 )
 
 /*  Test runner */
 #define MU_RUN_TEST(test) MU__SAFE_BLOCK(\
-    if (minunit_setup) (*minunit_setup)();\
+    if (minunitSetup) (*minunitSetup)();\
     minunitStatus = 0;\
     test();\
     minunitRun++;\
     if (minunitStatus) minunitFailures++;\
-    if (minunit_teardown) (*minunit_teardown)();\
+    if (minunitTeardown) (*minunitTeardown)();\
 )
 
 /*  Assertions */
@@ -81,6 +85,12 @@ static int minunitStatus = 0;
         minunitStatus = 1;\
         return;\
     }\
+)
+
+#define mu_fail() MU__SAFE_BLOCK(\
+    minunitAsserts++;\
+    minunitStatus = 1;\
+    return;\
 )
 
 #endif

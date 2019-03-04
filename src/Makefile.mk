@@ -1,6 +1,6 @@
 # project settings
 BIN_NAME = squantorMinUnitCexample
-C_SOURCES = src/main.c tests1.c
+C_SOURCES = src/main.c src/tests1.c
 CXX_SOURCES =
 S_SOURCES =
 INCLUDES = -Iinc
