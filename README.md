@@ -1,5 +1,5 @@
 # Minimal Unittest framework for C
-Yet another minimal unittest framework for C, but this one does not depend on libC or other things. The reason for is existence is to allow on embedded target testing or other niche usecases. Copied and heavely modified from [Minunit](https://github.com/siu/minunit) and uses minimal C runtime environment from [Louis P. Santillan](https://github.com/lpsantil/rt0.git).
+Yet another minimal unittest framework for C, but this one does not depend on anything. The reason for this is to allow unittests to be run on an embedded target or other niche usecases. Copied and modified from [Minunit](https://github.com/siu/minunit) and uses minimal C runtime environment from [rt0](https://github.com/lpsantil/rt0.git).
 ## Usage
 As this framework is is based on [Minunit](https://github.com/siu/minunit) its usage is identical but some functions/macros have been removed. Below is a minimal example:
 ```
@@ -43,6 +43,9 @@ This makes it possible to spread out your test suites over multiple files.
 Building happens with make. Just invoking make will compile the PC target in release mode. Using the ```PLATFORM=``` on the commandline you can specify what platform to compile for, valid options are:
 * ```PC```, just any PC with gcc and libc
 * ```bare_PC```, just has gcc and works only in linux (tested on ubuntu 18.04) and uses syscalls to print something
-The reason for the bare_PC target is I wanted something barebones on my development machine that resembles an embedded target library wise. In the future I want to use this testing framework to unittest a minimal C library implementation.
+The reason for the bare_PC target is I wanted something barebones on my development machine that resembles an embedded target library wise. 
+Example debug build command for PC target:
+```make PLATFORM=PC debug```
+Binaries are placed in the bin directory.
 ## limitations
 None found, yet. Please report if you encounter issues.
