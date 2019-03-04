@@ -10,8 +10,9 @@
     <File Name="inc/sqMinUnitC.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="src">
+    <File Name="src/main_PC.c"/>
+    <File Name="src/main_bare_PC.c"/>
     <File Name="src/tests1.c"/>
-    <File Name="src/main.c"/>
   </VirtualDirectory>
   <Description/>
   <Dependencies/>
