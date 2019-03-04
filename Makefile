@@ -19,7 +19,8 @@ MKDIR = mkdir
 RM = rm
 C_COMPILER = gcc
 CXX_COMPILER = g++
-LINKER = ld
+# the bare platform wants ld, PC platform needs gcc
+LINKER ?= ld
 GDB = gdb
 SIZE = size
 AR = ar
@@ -108,7 +109,7 @@ all: $(BIN_PATH)/$(BIN_NAME).elf
 
 # create the executable
 $(BIN_PATH)/$(BIN_NAME).elf: $(OBJECTS)
-	$(TOOLCHAIN_PREFIX)$(CXX_COMPILER) $(LDFLAGS) $(OBJECTS) -Xlinker -Map="$@.map" -o $@ $(LIBS)
+	$(TOOLCHAIN_PREFIX)$(LINKER) $(LDFLAGS) $(OBJECTS) -o $@ $(LIBS)
 	date >> size$(BUILD_TARGET).log
 	$(TOOLCHAIN_PREFIX)$(SIZE) $@ >> size$(BUILD_TARGET).log
 	$(TOOLCHAIN_PREFIX)$(SIZE) $@
