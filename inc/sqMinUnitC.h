@@ -40,7 +40,7 @@ No dependencies on anything and minimal facilities
 static void (*minunitSetup)(void) = NULL;
 static void (*minunitTeardown)(void) = NULL;
 
-/* global test run tracking variables */
+/* test run tracking variables, need to be globally defined */
 extern int minunitRun; /* tests run */
 extern int minunitFailures; /* tests failed */
 extern int minunitAsserts; /* asserts run */

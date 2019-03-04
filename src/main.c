@@ -22,10 +22,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 #include <stdio.h>
-#include <sqMinUnitC.h>
+#include <tests1.h>
+
+int minunitRun; /* tests run */
+int minunitFailures; /* tests failed */
+int minunitAsserts; /* asserts run */
 
 int main(int argc, char *argv[])
 {
+    runTestSet1();
     // print statistics
+    printf("Tests run %d\n", minunitRun);
+    printf("Asserts checked %d\n",minunitAsserts);
+    printf("Asserts failed %d\n",minunitFailures);
     return 0;
 }
