@@ -19,6 +19,7 @@ MKDIR = mkdir
 RM = rm
 C_COMPILER = gcc
 CXX_COMPILER = g++
+LINKER = ld
 GDB = gdb
 SIZE = size
 AR = ar
@@ -40,8 +41,8 @@ ASM_RELEASE_COMPILE_FLAGS =
 ASM_DEBUG_COMPILE_FLAGS = -g3
 
 LINK_FLAGS +=
-LINK_FLAGS_RELEASE =
-LINK_FLAGS_DEBUG =
+LINK_FLAGS_RELEASE +=
+LINK_FLAGS_DEBUG +=
 LDSCRIPT =
 
 # Clear built-in rules
@@ -82,13 +83,12 @@ OBJECTS += $(S_SOURCES:%.s=$(BUILD_PATH)/%.s.o)
 # Set the dependency files that will be used to add header dependencies
 DEPS = $(OBJECTS:.o=.d)
 
-# Standard, non-optimized release build
-release: dirs
-	# make lpc_chip library if needed
+# Standard, optimized and stripped release build
+release: dirs Makefile ./src/Makefile.mk
 	$(MAKE) all --no-print-directory
 
-# Debug build for gdb debugging
-debug: dirs
+# unoptimized build with debug information
+debug: dirs Makefile ./src/Makefile.mk
 	$(MAKE) all --no-print-directory
 
 # Create the directories used in the build
@@ -103,7 +103,7 @@ clean:
 	$(RM) -r build
 	$(RM) -r bin
 
-# Main rule, checks the executable and symlinks to the output
+# Main rule
 all: $(BIN_PATH)/$(BIN_NAME).elf
 
 # create the executable
