@@ -59,12 +59,12 @@ release: export CFLAGS := $(COMPILE_C_FLAGS) $(C_RELEASE_COMPILE_FLAGS) $(DEFINE
 release: export CXXFLAGS := $(COMPILE_CXX_FLAGS) $(CXX_RELEASE_COMPILE_FLAGS) $(DEFINES_RELEASE) $(DEFINES)
 release: export ASMFLAGS := $(COMPILE_ASM_FLAGS) $(ASM_RELEASE_COMPILE_FLAGS) $(DEFINES_RELEASE) $(DEFINES)
 release: export LDFLAGS := $(LINK_FLAGS) $(LINK_FLAGS_RELEASE) $(LIBDIR) $(RLIBDIR) $(LDSCRIPT)
-release: export LIBS := $(ALIBS) $(RLIBS)
+release: export LIBS := $(PLATFORM_OBJECTS) $(ALIBS) $(RLIBS)
 debug: export CFLAGS := $(COMPILE_C_FLAGS) $(C_DEBUG_COMPILE_FLAGS) $(DEFINES_DEBUG) $(DEFINES)
 debug: export CXXFLAGS := $(COMPILE_CXX_FLAGS) $(CXX_DEBUG_COMPILE_FLAGS) $(DEFINES_DEBUG) $(DEFINES)
 debug: export ASMFLAGS := $(COMPILE_ASM_FLAGS) $(ASM_DEBUG_COMPILE_FLAGS) $(DEFINES_DEBUG) $(DEFINES)
 debug: export LDFLAGS := $(LINK_FLAGS) $(LINK_FLAGS_DEBUG) $(LIBDIR) $(DLIBDIR) $(LDSCRIPT)
-debug: export LIBS := $(ALIBS) $(DLIBS)
+debug: export LIBS := $(PLATFORM_OBJECTS) $(ALIBS) $(DLIBS)
 
 # Build and output paths
 release: export BUILD_PATH := build/$(PLATFORM)/release
@@ -78,7 +78,7 @@ debug: export BUILD_TARGET := debug
 
 # Set the object file names, with the source directory stripped
 # from the path, and the build path prepended in its place
-OBJECTS = $(C_SOURCES:%.c=$(BUILD_PATH)/%.c.o)
+OBJECTS += $(C_SOURCES:%.c=$(BUILD_PATH)/%.c.o)
 OBJECTS += $(CXX_SOURCES:%.cpp=$(BUILD_PATH)/%.cpp.o)
 OBJECTS += $(S_SOURCES:%.s=$(BUILD_PATH)/%.s.o)
 # Set the dependency files that will be used to add header dependencies
@@ -109,7 +109,7 @@ all: $(BIN_PATH)/$(BIN_NAME).elf
 
 # create the executable
 $(BIN_PATH)/$(BIN_NAME).elf: $(OBJECTS)
-	$(TOOLCHAIN_PREFIX)$(LINKER) $(LDFLAGS) $(OBJECTS) -o $@ $(LIBS)
+	$(TOOLCHAIN_PREFIX)$(LINKER) $(LDFLAGS) $(OBJECTS) $(LIBS) -o $@
 	date >> size$(BUILD_TARGET).log
 	$(TOOLCHAIN_PREFIX)$(SIZE) $@ >> size$(BUILD_TARGET).log
 	$(TOOLCHAIN_PREFIX)$(SIZE) $@
