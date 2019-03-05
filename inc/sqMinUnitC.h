@@ -22,9 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 /*
-Minimal C unittesting framework, inspired by:
-http://www.jera.com/techinfo/jtns/jtn002.html
-Further inspired by:
+Minimal C unittesting framework, based on:
 https://github.com/siu/minunit
 
 No dependencies on anything and minimal facilities
