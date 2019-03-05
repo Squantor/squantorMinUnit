@@ -10,15 +10,9 @@
 #include <rt0/rt0.h>
 #include <asm-generic/errno.h>
 
-#ifdef __LP64__
-   #include <rt0/sys64.h>
-#else
-   #include <rt0/sys32.h>
-#endif
+#include <rt0/sys64.h>
 
 long syscall6( long n, long a0, long a1, long a2, long a3, long a4, long a5 );
-
-#ifndef __RT0_WITH_FASTER_SYSCALL__
 
 #define syscall5( m, b0, b1, b2, b3, b4 )                            \
    syscall6( ( m ), ( b0 ), ( b1 ), ( b2 ), ( b3 ), ( b4 ), 0 )
@@ -32,16 +26,5 @@ long syscall6( long n, long a0, long a1, long a2, long a3, long a4, long a5 );
    syscall2( ( m ), ( b0 ), 0 )
 #define syscall0( m )                                                \
    syscall1( ( m ), 0 )
-
-#else
-
-long syscall5( long n, long a0, long a1, long a2, long a3, long a4 );
-long syscall4( long n, long a0, long a1, long a2, long a3 );
-long syscall3( long n, long a0, long a1, long a2 );
-long syscall2( long n, long a0, long a1 );
-long syscall1( long n, long a0 );
-long syscall0( long n );
-
-#endif
 
 #endif
