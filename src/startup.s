@@ -22,7 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 /*
-With help from: https://github.com/zhmu
+Based on Rt0: https://github.com/lpsantil/rt0
+Modified with help from: https://github.com/zhmu
 */
 .text
 
