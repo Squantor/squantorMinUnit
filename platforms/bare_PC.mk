@@ -2,8 +2,8 @@
 TOOLCHAIN_PREFIX =
 C_SOURCES += src/main_bare_PC.c src/00_start.c src/_exit.c
 S_SOURCES += src/startup.s
-COMPILE_C_FLAGS += -std=gnu11 -Wall -Wextra -pedantic -nostdlib -fomit-frame-pointer -fno-stack-protector -fno-unwind-tables -fno-asynchronous-unwind-tables -fno-unroll-loops -fmerge-all-constants -fno-ident -mfpmath=sse -mfancy-math-387 -ffunction-sections -fdata-sections -Wl,--gc-sections
-COMPILE_CXX_FLAGS += -std=c++17 -Wall -Wextra
+COMPILE_C_FLAGS += -nostdlib -fomit-frame-pointer -fno-stack-protector -fno-unwind-tables -fno-asynchronous-unwind-tables -fno-unroll-loops -fmerge-all-constants -fno-ident -mfpmath=sse -mfancy-math-387 -ffunction-sections -fdata-sections
+COMPILE_CXX_FLAGS +=
 COMPILE_ASM_FLAGS += -c -x assembler-with-cpp
 ALIBS +=
 LINK_FLAGS += -static -nostdlib -z norelro --hash-style=sysv --build-id=none --gc-sections
