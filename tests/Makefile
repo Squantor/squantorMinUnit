@@ -1,15 +1,14 @@
-# we only run as PC platform
-PLATFORM ?= PC
-# load platform settings
-include platforms/$(PLATFORM).mk
-# load project settings
+# update per change V0008
+# get project settings
 include src/Makefile.mk
+# get platform settings
+include platforms/$(PLATFORM).mk
 
 INCLUDES +=
-LIBDIR +=
 ALIBS +=
 RLIBS +=
 DLIBS +=
+ALIBDIR +=
 RLIBDIR +=
 DLIBDIR +=
 
@@ -19,7 +18,6 @@ MKDIR = mkdir
 RM = rm
 C_COMPILER = gcc
 CXX_COMPILER = g++
-# the bare platform wants ld, PC platform needs gcc
 LINKER ?= ld
 GDB = gdb
 SIZE = size
@@ -58,13 +56,13 @@ print-%: ; @echo $*=$($*)
 release: export CFLAGS := $(COMPILE_C_FLAGS) $(C_RELEASE_COMPILE_FLAGS) $(DEFINES_RELEASE) $(DEFINES)
 release: export CXXFLAGS := $(COMPILE_CXX_FLAGS) $(CXX_RELEASE_COMPILE_FLAGS) $(DEFINES_RELEASE) $(DEFINES)
 release: export ASMFLAGS := $(COMPILE_ASM_FLAGS) $(ASM_RELEASE_COMPILE_FLAGS) $(DEFINES_RELEASE) $(DEFINES)
-release: export LDFLAGS := $(LINK_FLAGS) $(LINK_FLAGS_RELEASE) $(LIBDIR) $(RLIBDIR) $(LDSCRIPT)
-release: export LIBS := $(PLATFORM_OBJECTS) $(ALIBS) $(RLIBS)
+release: export LDFLAGS := $(LINK_FLAGS) $(LINK_FLAGS_RELEASE) $(ALIBDIR) $(RLIBDIR) $(LDSCRIPT)
+release: export LIBS := $(ALIBS) $(RLIBS)
 debug: export CFLAGS := $(COMPILE_C_FLAGS) $(C_DEBUG_COMPILE_FLAGS) $(DEFINES_DEBUG) $(DEFINES)
 debug: export CXXFLAGS := $(COMPILE_CXX_FLAGS) $(CXX_DEBUG_COMPILE_FLAGS) $(DEFINES_DEBUG) $(DEFINES)
 debug: export ASMFLAGS := $(COMPILE_ASM_FLAGS) $(ASM_DEBUG_COMPILE_FLAGS) $(DEFINES_DEBUG) $(DEFINES)
-debug: export LDFLAGS := $(LINK_FLAGS) $(LINK_FLAGS_DEBUG) $(LIBDIR) $(DLIBDIR) $(LDSCRIPT)
-debug: export LIBS := $(PLATFORM_OBJECTS) $(ALIBS) $(DLIBS)
+debug: export LDFLAGS := $(LINK_FLAGS) $(LINK_FLAGS_DEBUG) $(ALIBDIR) $(DLIBDIR) $(LDSCRIPT)
+debug: export LIBS := $(ALIBS) $(DLIBS)
 
 # Build and output paths
 release: export BUILD_PATH := build/$(PLATFORM)/release
@@ -84,12 +82,12 @@ OBJECTS += $(S_SOURCES:%.s=$(BUILD_PATH)/%.s.o)
 # Set the dependency files that will be used to add header dependencies
 DEPS = $(OBJECTS:.o=.d)
 
-# Standard, optimized and stripped release build
-release: dirs Makefile ./src/Makefile.mk
+# Standard, non-optimized release build
+release: dirs pre-release
 	$(MAKE) all --no-print-directory
 
-# unoptimized build with debug information
-debug: dirs Makefile ./src/Makefile.mk
+# Debug build for gdb debugging
+debug: dirs pre-debug
 	$(MAKE) all --no-print-directory
 
 # Create the directories used in the build
@@ -98,9 +96,7 @@ dirs:
 	$(MKDIR) -p $(BIN_PATH)
 
 # Removes all build files
-clean_debug:
-clean_release:
-clean:
+clean: pre-clean
 	$(RM) -r build
 	$(RM) -r bin
 
@@ -122,6 +118,7 @@ $(BIN_PATH)/$(BIN_NAME).elf: $(OBJECTS)
 # After the first compilation they will be joined with the rules from the
 # dependency files to provide header dependencies
 # if the source file is in a subdir, create this subdir in the build dir
+# additional dependency on Makefile and more importantly the include in src
 $(BUILD_PATH)/%.c.o: ./%.c Makefile ./src/Makefile.mk
 	$(MKDIR) -p $(dir $@) 
 	$(TOOLCHAIN_PREFIX)$(C_COMPILER) $(CFLAGS) $(INCLUDES) -MP -MMD -c $< -o $@
