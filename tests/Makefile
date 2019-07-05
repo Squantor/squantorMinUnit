@@ -1,14 +1,14 @@
-# update per change V0008
+# update per change V0010
 # get project settings
 include src/Makefile.mk
 # get platform settings
-include platforms/$(PLATFORM).mk
+include platform/$(PLATFORM).mk
 
-INCLUDES +=
+INCLUDES += -Iplatform
 ALIBS +=
 RLIBS +=
 DLIBS +=
-ALIBDIR +=
+ALIBDIR += -L"./ld"
 RLIBDIR +=
 DLIBDIR +=
 
@@ -18,7 +18,6 @@ MKDIR = mkdir
 RM = rm
 C_COMPILER = gcc
 CXX_COMPILER = g++
-LINKER ?= ld
 GDB = gdb
 SIZE = size
 AR = ar
@@ -42,7 +41,6 @@ ASM_DEBUG_COMPILE_FLAGS = -g3
 LINK_FLAGS +=
 LINK_FLAGS_RELEASE +=
 LINK_FLAGS_DEBUG +=
-LDSCRIPT =
 
 # Clear built-in rules
 .SUFFIXES:
@@ -65,10 +63,10 @@ debug: export LDFLAGS := $(LINK_FLAGS) $(LINK_FLAGS_DEBUG) $(ALIBDIR) $(DLIBDIR)
 debug: export LIBS := $(ALIBS) $(DLIBS)
 
 # Build and output paths
-release: export BUILD_PATH := build/$(PLATFORM)/release
-release: export BIN_PATH := bin/$(PLATFORM)/release
-debug: export BUILD_PATH := build/$(PLATFORM)/debug
-debug: export BIN_PATH := bin/$(PLATFORM)/debug
+release: export BUILD_PATH := build/release
+release: export BIN_PATH := bin/release
+debug: export BUILD_PATH := build/debug
+debug: export BIN_PATH := bin/debug
 
 # export what target we are building, used for size logs
 release: export BUILD_TARGET := release
@@ -105,10 +103,13 @@ all: $(BIN_PATH)/$(BIN_NAME).elf
 
 # create the executable
 $(BIN_PATH)/$(BIN_NAME).elf: $(OBJECTS)
-	$(TOOLCHAIN_PREFIX)$(LINKER) $(LDFLAGS) $(OBJECTS) $(LIBS) -o $@
+	$(TOOLCHAIN_PREFIX)$(LINKER) $(LDFLAGS) $(OBJECTS) -o $@ $(LIBS)
+	# dump size and log to file
+	$(TOOLCHAIN_PREFIX)$(SIZE) -x --format=SysV $@ 
 	date >> size$(BUILD_TARGET).log
 	$(TOOLCHAIN_PREFIX)$(SIZE) $@ >> size$(BUILD_TARGET).log
-	$(TOOLCHAIN_PREFIX)$(SIZE) $@
+	# create the various output files
+	$(TOOLCHAIN_PREFIX)$(OBJCOPY) -R .stack -O binary $@ $(BIN_PATH)/$(BIN_NAME).bin
 	$(TOOLCHAIN_PREFIX)$(OBJDUMP) -h -S "$@" > "$(BIN_PATH)/$(BIN_NAME).lss"
 
 # Add dependency files, if they exist
