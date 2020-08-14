@@ -1,34 +1,15 @@
 /*
-MIT License
-
-Copyright (c) 2019 Bart Bilos
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
-/*
-Minimal C unittesting framework, based on:
-https://github.com/siu/minunit
-
-No dependencies on anything and minimal facilities
-*/
-#ifndef SQMINUNITC_H
-#define SQMINUNITC_H
+ * SPDX-License-Identifier: MIT
+ *
+ * Copyright (c) 2020-2020 Bart Bilos
+ * For conditions of distribution and use, see LICENSE file
+ */
+/**
+ * Minimal C++ unittesting framework, based on:
+ * https://github.com/siu/minunit
+ */
+#ifndef MINUNIT_HPP
+#define MINUNIT_HPP
 
 #ifndef NULL
 # ifndef __cplusplus
@@ -38,20 +19,31 @@ No dependencies on anything and minimal facilities
 # endif
 #endif
 
-/*  Test setup and teardown function pointers */
-static void (*minunitSetup)(void) = NULL;
-static void (*minunitTeardown)(void) = NULL;
+static void (*minunitSetup)(void) = NULL; /*!< Test suite local function pointer to test setup */
+static void (*minunitTeardown)(void) = NULL; /*!< Test suite local function pointer to test teardown */
 
-/* test run tracking variables, need to be globally defined */
-extern int minunitRun; /* tests run */
-extern int minunitFailures; /* tests failed */
-extern int minunitAsserts; /* asserts run */
-/* test suite status tracking */
-static int minunitStatus = 0;
+extern int minunitRun; /*!< Total tests run, needs to be gobally defined */
+extern int minunitFailures; /*!< Total tests failed, needs to be globally defined */
+extern int minunitAsserts; /*!< Total test asserts executed, needs to be globally defined */
+static int minunitStatus = 0; /*!< Test suite local status variable */
 
-/*  Definitions */
-#define MU_TEST(methodName) static void methodName(void)
+/**
+ * Creates a test suite entry
+ * 
+ * Used to create a test suite for a bunch of tests, example definition:
+ * ```
+ * MU_TEST_SUITE(mysuite)
+ * {
+ * }
+ * ```
+ */
 #define MU_TEST_SUITE(suiteName) static void suiteName(void)
+
+/**
+ *  
+ */
+#define MU_TEST(methodName) static void methodName(void)
+
 
 #define MU__SAFE_BLOCK(block) do {\
     block\
