@@ -19,13 +19,29 @@
 # endif
 #endif
 
-static void (*minunitSetup)(void) = NULL; /*!< Test suite local function pointer to test setup */
-static void (*minunitTeardown)(void) = NULL; /*!< Test suite local function pointer to test teardown */
+/**
+ *  Macro to wrap a safe define block
+ *  
+ *  Helper macro to create a safe block to be used in other C style macros
+ *  @param[in]  block   Block of statements that will be wrapped in a ```do{ }while(0)``` block.
+ */
+#define MU__SAFE_BLOCK(block) do {\
+    block\
+} while(0)
+
+#define MU_TEST_GLOBAL_STATE \
+    int minunitRun; /*!< Total tests run, needs to be gobally defined */\
+    int minunitFailures; /*!< Total tests failed, needs to be globally defined */\
+    int minunitAsserts; /*!< Total test asserts executed, needs to be globally defined */\
+
+#define MU_TEST_TEST_STATE \
+    static int minunitStatus = 0; /*!< Test suite local status variable */\
+    static void (*minunitSetup)(void) = NULL; /*!< Test suite local function pointer to test setup */\
+    static void (*minunitTeardown)(void) = NULL; /*!< Test suite local function pointer to test teardown */\
 
 extern int minunitRun; /*!< Total tests run, needs to be gobally defined */
 extern int minunitFailures; /*!< Total tests failed, needs to be globally defined */
 extern int minunitAsserts; /*!< Total test asserts executed, needs to be globally defined */
-static int minunitStatus = 0; /*!< Test suite local status variable */
 
 /**
  * Creates a test suite entry
@@ -43,11 +59,6 @@ static int minunitStatus = 0; /*!< Test suite local status variable */
  *  
  */
 #define MU_TEST(methodName) static void methodName(void)
-
-
-#define MU__SAFE_BLOCK(block) do {\
-    block\
-} while(0)
 
 /*  Run test suite and unset setup and teardown functions */
 #define MU_RUN_SUITE(suiteName) MU__SAFE_BLOCK(\
