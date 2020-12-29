@@ -48,7 +48,7 @@ typedef struct {
 #define MINUNIT_ADD(name)\
     static void minunit_##name(minunitState *testResults);\
     static void __attribute__((constructor)) __construct_minunit_##name(void) {\
-        minunitAddTest(#name, minunit_##name);\
+        minunitAddTest(minunit_##name);\
     }\
     static void minunit_##name(minunitState *testResults)
 
@@ -59,12 +59,10 @@ extern minunitState minunitTestState; /*!< minunit global state */
 
 /**
  * \brief function to add test to the test table
- * 
  * Used internally by the macro MINUNIT_ADD
- * 
  * @param[in]  autoreg_func   Function pointer to the actual test
  */
-void minunitAddTest(const char *name, void (*autoreg_func)(minunitState *testResults));
+void minunitAddTest(void (*autoreg_func)(minunitState *testResults));
 
 /**
  * \brief function execute all tests

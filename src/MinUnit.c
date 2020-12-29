@@ -11,7 +11,7 @@ int minunitTestCount = 0;
 
 minunitState minunitTestState;
 
-void minunitAddTest(const char *name, void (*autoreg_func)(minunitState *testResults))
+void minunitAddTest(void (*autoreg_func)(minunitState *testResults))
 {
     if(minunitTestCount < MINUNIT_MAX_TESTS-1)
     {
