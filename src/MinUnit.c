@@ -8,8 +8,8 @@
 
 void (*minunitTestsTable[MINUNIT_MAX_TESTS])(minunitState *testResults);
 int minunitTestCount = 0;
-minunitState minunitTestState;
 
+minunitState minunitTestState;
 
 void minunitAddTest(const char *name, void (*autoreg_func)(minunitState *testResults))
 {
@@ -24,7 +24,7 @@ int minunitRun(void)
 {
     minunitTestState.executed = 0;
     minunitTestState.failures = 0;
-    minunitTestState.asserts = 0;
+    minunitTestState.checks = 0;
     for(int i = 0; i < minunitTestCount; i++)
     {
         minunitTestState.failed = 0;

@@ -35,7 +35,7 @@ extern "C" {
 typedef struct {
     int executed; /*!< Total tests executed */
     int failures; /*!< Total tests failed */
-    int asserts; /*!< Total test asserts executed */
+    int checks; /*!< Total test asserts executed */
     int failed; /*!< did the current test fail */
 } minunitState;
 
@@ -54,6 +54,7 @@ typedef struct {
 
 extern void (*minunitTestsTable[])(minunitState *testResults);
 extern int minunitTestCount;
+extern minunitState minunitTestState;
 
 void minunitAddTest(const char *name, void (*autoreg_func)(minunitState *testResults));
 int minunitRun(void);
@@ -81,7 +82,7 @@ int minunitRun(void);
  * @param[in] test Check to perform
  */
 #define minUnitCheck(test) MU__SAFE_BLOCK(\
-    testResults->asserts++;\
+    testResults->checks++;\
     if (!(test)) {\
         testResults->failed = 1;\
         return;\
@@ -92,7 +93,7 @@ int minunitRun(void);
  * \brief automatically fail test
  */
 #define minUnitFail() MU__SAFE_BLOCK(\
-    testResults->asserts++;\
+    testResults->checks++;\
     testResults->failed = 1;\
     return;\
 )
