@@ -40,7 +40,10 @@ typedef struct {
 } minunitState;
 
 /**
- * \brief TODO
+ * \brief Macro to register a test
+ * 
+ * Helper macro to register a test with minunit
+ * @param[in]  name   Name of the test
  */
 #define MINUNIT_ADD(name)\
     static void minunit_##name(minunitState *testResults);\
@@ -49,14 +52,25 @@ typedef struct {
     }\
     static void minunit_##name(minunitState *testResults)
 
-#define MINUNIT_RUN()     \
-    minunitRun()
 
-extern void (*minunitTestsTable[])(minunitState *testResults);
-extern int minunitTestCount;
-extern minunitState minunitTestState;
+extern void (*minunitTestsTable[])(minunitState *testResults); /*!< table of tests to execute */
+extern int minunitTestCount; /*!< Counter of available tests */
+extern minunitState minunitTestState; /*!< minunit global state */
 
+/**
+ * \brief function to add test to the test table
+ * 
+ * Used internally by the macro MINUNIT_ADD
+ * 
+ * @param[in]  autoreg_func   Function pointer to the actual test
+ */
 void minunitAddTest(const char *name, void (*autoreg_func)(minunitState *testResults));
+
+/**
+ * \brief function execute all tests
+ * 
+ * Executes all tests registered with MINUNIT_ADD
+ */
 int minunitRun(void);
 
 /**
