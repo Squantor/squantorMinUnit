@@ -10,4 +10,4 @@
 
 # library files and includes
 INCLUDES += -IMinUnit/inc
-
+FILES += squantorMinUnit/src/MinUnit.c
