@@ -29,20 +29,33 @@
 extern "C" {
 #endif
 
-extern void (*minunitTestsTable[])(void);
-extern int minunitTestCount;
+/**
+ * \brief Datastructure defining test state
+ */
+typedef struct {
+    int executed; /*!< Total tests executed */
+    int failures; /*!< Total tests failed */
+    int asserts; /*!< Total test asserts executed */
+    int failed; /*!< did the current test fail */
+} minunitState;
 
-#define MINUNIT_ADD(name)                                                               \
-    static void minunit_##name(void);                                                   \
-    static void __attribute__((constructor)) __construct_minunit_##name(void) {    \
-        minunitAddTest(#name, &minunit_##name);                                  \
-    }                                                                                   \
-    static void minunit_##name(void)
+/**
+ * \brief TODO
+ */
+#define MINUNIT_ADD(name)\
+    static void minunit_##name(minunitState *testResults);\
+    static void __attribute__((constructor)) __construct_minunit_##name(void) {\
+        minunitAddTest(#name, minunit_##name);\
+    }\
+    static void minunit_##name(minunitState *testResults)
 
 #define MINUNIT_RUN()     \
     minunitRun()
 
-void minunitAddTest(const char *name, void (*autoreg_func)(void));
+extern void (*minunitTestsTable[])(minunitState *testResults);
+extern int minunitTestCount;
+
+void minunitAddTest(const char *name, void (*autoreg_func)(minunitState *testResults));
 int minunitRun(void);
 
 /**
@@ -56,124 +69,6 @@ int minunitRun(void);
 } while(0)
 
 /**
- * \brief Macro to generate the global state for all the tests
- * 
- * Generates the global state for all tests, these are all the counters like tests run, 
- * tests failed and amount of test assertions executed.
- */
-#define MU_TEST_GLOBAL_STATE \
-    int minunitRun; /*!< Total tests run, needs to be gobally defined */\
-    int minunitFailures; /*!< Total tests failed, needs to be globally defined */\
-    int minunitAsserts; /*!< Total test asserts executed, needs to be globally defined */\
-
-/**
- * \brief Macro to generate the state for the current test suite
- * 
- * Generates the local state for the test suite, these are setup and teardown functions and
- * the running test state.
- */
-#define MU_TEST_TEST_STATE \
-    static int minunitStatus = 0; /*!< Test suite local status variable */\
-    static void (*minunitSetup)(void) = NULL; /*!< Test suite local function pointer to test setup */\
-    static void (*minunitTeardown)(void) = NULL; /*!< Test suite local function pointer to test teardown */\
-
-
-//extern int minunitRun; /*!< Total tests run, needs to be defined with MU_TEST_GLOBAL_STATE */
-extern int minunitFailures; /*!< Total tests failed, needs to be defined with MU_TEST_GLOBAL_STATE */
-extern int minunitAsserts; /*!< Total test asserts executed, needs to be defined with MU_TEST_GLOBAL_STATE */
-
-/**
- * \brief Creates a test suite entry
- * 
- * Used to create a test suite for a bunch of tests, example:
- * ```
- * MU_TEST_SUITE(mysuite)
- * {
- *     MU_SUITE_CONFIGURE(&myTestSetup, &myTestTeardown);
- *     MU_RUN_TEST(mytest);
- * }
- * ```
- */
-#define MU_TEST_SUITE(suiteName) static void suiteName(void)
-
-/**
- * \brief Configures the test suite
- * 
- * Configures the tests suite with the setup and teardown functions.
- * Needs to be configured before each test.
- * ```
- * MU_TEST_SUITE(mysuite)
- * {
- *     MU_SUITE_CONFIGURE(&myTestSetup, &myTestTeardown);
- *     MU_RUN_TEST(mytest);
- * }
- * ```
- * @param[in] setupFun Function pointer to the test setup function
- * @param[in] teardownFun Function pointer to the test teardown function
- */
-#define MU_SUITE_CONFIGURE(setupFun, teardownFun) MU__SAFE_BLOCK(\
-    minunitSetup = setupFun;\
-    minunitTeardown = teardownFun;\
-)
-
-/**
- * \brief Executes a test suite
- * 
- * Executes a defined test suite, clears the setup and teardown afterwards.
- * ```
- * MU_TEST_SUITE(mysuite)
- * {
- *     MU_SUITE_CONFIGURE(&myTestSetup, &myTestTeardown);
- *     MU_RUN_TEST(mytest);
- * }
- * ```
- */
-#define MU_RUN_SUITE(suiteName) MU__SAFE_BLOCK(\
-    suiteName();\
-    minunitSetup = NULL;\
-    minunitTeardown = NULL;\
-)
-
-/**
- * \brief executes a test
- * 
- * Runs the test, the test setup (if configured) will be run before and
- * test teardown (if configured) will be executed afterwards.
- * ```
- * MU_TEST_SUITE(mysuite)
- * {
- *     MU_SUITE_CONFIGURE(&myTestSetup, &myTestTeardown);
- *     MU_RUN_TEST(mytest); // clears the setup and teardown
- *     MU_SUITE_CONFIGURE(&myTestSetup, &myTestTeardown);
- *     MU_RUN_TEST(mytest2);
- * }
- * ```
- * @param[in] test Test name to execute
- */
-#define MU_RUN_TEST(test) MU__SAFE_BLOCK(\
-    if (minunitSetup) (*minunitSetup)();\
-    minunitStatus = 0;\
-    test();\
-    minunitRun++;\
-    if (minunitStatus) minunitFailures++;\
-    if (minunitTeardown) (*minunitTeardown)();\
-)
-
-/**
- * \brief Creates a test
- * 
- * Creates a test.
- * ```
- * MU_TEST(myTest)
- * {
- *     mu_check(true == true);
- * }
- * ```
- * @param[in] methodName Test name
- */
-#define MU_TEST(methodName) static void methodName(void)
-
-/**
  * \brief Executes a check
  * 
  * Executes a check, the argument needs to be true for the check to pass.
@@ -185,17 +80,20 @@ extern int minunitAsserts; /*!< Total test asserts executed, needs to be defined
  * ```
  * @param[in] test Check to perform
  */
-#define mu_check(test) MU__SAFE_BLOCK(\
-    minunitAsserts++;\
+#define minUnitCheck(test) MU__SAFE_BLOCK(\
+    testResults->asserts++;\
     if (!(test)) {\
-        minunitStatus = 1;\
+        testResults->failed = 1;\
         return;\
     }\
 )
 
-#define mu_fail() MU__SAFE_BLOCK(\
-    minunitAsserts++;\
-    minunitStatus = 1;\
+/**
+ * \brief automatically fail test
+ */
+#define minUnitFail() MU__SAFE_BLOCK(\
+    testResults->asserts++;\
+    testResults->failed = 1;\
     return;\
 )
 

@@ -5,11 +5,13 @@
 #define MINUNIT_MAX_TESTS 100
 #endif
 
-void (*minunitTestsTable[MINUNIT_MAX_TESTS])(void);
+
+void (*minunitTestsTable[MINUNIT_MAX_TESTS])(minunitState *testResults);
 int minunitTestCount = 0;
+minunitState minunitTestState;
 
 
-void minunitAddTest(const char *name, void (*autoreg_func)(void))
+void minunitAddTest(const char *name, void (*autoreg_func)(minunitState *testResults))
 {
     if(minunitTestCount < MINUNIT_MAX_TESTS-1)
     {
@@ -20,9 +22,18 @@ void minunitAddTest(const char *name, void (*autoreg_func)(void))
 
 int minunitRun(void)
 {
+    minunitTestState.executed = 0;
+    minunitTestState.failures = 0;
+    minunitTestState.asserts = 0;
     for(int i = 0; i < minunitTestCount; i++)
     {
-        minunitTestsTable[i]();
+        minunitTestState.failed = 0;
+        minunitTestsTable[i](&minunitTestState);
+        if(minunitTestState.failed != 0)
+        {
+            minunitTestState.failures++;
+        }
+        minunitTestState.executed++;
     }
     return 0;
 }
