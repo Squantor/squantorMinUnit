@@ -11,9 +11,11 @@
  * 
  * Minimal C++ unittesting framework, based on:
  * https://github.com/siu/minunit
+ * Further inspiration drawn from:
+ * https://github.com/ollelogdahl/ihct
  */ 
-#ifndef MINUNIT_HPP
-#define MINUNIT_HPP
+#ifndef MINUNIT_H
+#define MINUNIT_H
 
 #ifndef NULL
 # ifndef __cplusplus
@@ -22,6 +24,26 @@
 # define NULL 0
 # endif
 #endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+extern void (*minunitTestsTable[])(void);
+extern int minunitTestCount;
+
+#define MINUNIT_ADD(name)                                                               \
+    static void minunit_##name(void);                                                   \
+    static void __attribute__((constructor)) __construct_minunit_##name(void) {    \
+        minunitAddTest(#name, &minunit_##name);                                  \
+    }                                                                                   \
+    static void minunit_##name(void)
+
+#define MINUNIT_RUN()     \
+    minunitRun()
+
+void minunitAddTest(const char *name, void (*autoreg_func)(void));
+int minunitRun(void);
 
 /**
  * \brief Macro to wrap a safe define block
@@ -56,7 +78,7 @@
     static void (*minunitTeardown)(void) = NULL; /*!< Test suite local function pointer to test teardown */\
 
 
-extern int minunitRun; /*!< Total tests run, needs to be defined with MU_TEST_GLOBAL_STATE */
+//extern int minunitRun; /*!< Total tests run, needs to be defined with MU_TEST_GLOBAL_STATE */
 extern int minunitFailures; /*!< Total tests failed, needs to be defined with MU_TEST_GLOBAL_STATE */
 extern int minunitAsserts; /*!< Total test asserts executed, needs to be defined with MU_TEST_GLOBAL_STATE */
 
@@ -176,5 +198,9 @@ extern int minunitAsserts; /*!< Total test asserts executed, needs to be defined
     minunitStatus = 1;\
     return;\
 )
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

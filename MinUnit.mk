@@ -9,5 +9,5 @@
 # Version: 20200814
 
 # library files and includes
-INCLUDES += -IMinUnit/inc
+INCLUDES += -IsquantorMinUnit/inc
 FILES += squantorMinUnit/src/MinUnit.c
