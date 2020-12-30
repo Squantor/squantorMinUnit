@@ -59,7 +59,9 @@ extern minunitState minunitTestState; /*!< minunit global state */
 
 /**
  * \brief function to add test to the test table
+ * 
  * Used internally by the macro MINUNIT_ADD
+ * 
  * @param[in]  autoreg_func   Function pointer to the actual test
  */
 void minunitAddTest(void (*autoreg_func)(minunitState *testResults));
@@ -72,6 +74,15 @@ void minunitAddTest(void (*autoreg_func)(minunitState *testResults));
 int minunitRun(void);
 
 /**
+ * \brief function to report messages
+ * 
+ * Used by minunit to report failing tests or just print progress
+ * 
+ * @param[in]  message   Message to print
+ */
+void minunitReport(const char * message);
+
+/**
  * \brief Macro to wrap a safe define block
  * 
  * Helper macro to create a safe block to be used in other C style macros
@@ -80,6 +91,24 @@ int minunitRun(void);
 #define MU__SAFE_BLOCK(block) do {\
     block\
 } while(0)
+
+/**
+ * \brief Convert a macro literal to string
+ * 
+ * Helper macro to convert a macro literal to a string, useful for __LINE__
+ * 
+ * @param[in]  x   Macro definition to convert to a string
+ */
+#define STRINGIFY(x) #x
+
+/**
+ * \brief Convert a macro literal to string
+ * 
+ * Final helper macro to convert a macro literal to a string, useful for __LINE__
+ * 
+ * @param[in]  x   Macro definition to convert to a string
+ */
+#define TOSTRING(x) STRINGIFY(x)
 
 /**
  * \brief Executes a check
@@ -97,7 +126,12 @@ int minunitRun(void);
     testResults->checks++;\
     if (!(test)) {\
         testResults->failed = 1;\
+        minunitReport("\n" __FILE__ ":" TOSTRING(__LINE__) " failed: " TOSTRING(test) "\n");\
         return;\
+    }\
+    else\
+    {\
+        minunitReport(".");\
     }\
 )
 

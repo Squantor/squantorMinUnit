@@ -34,6 +34,15 @@ int minunitRun(void)
             minunitTestState.failures++;
         }
         minunitTestState.executed++;
+        minunitReport("\n");
     }
     return 0;
+}
+
+
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
+__attribute__((weak)) void minunitReport(const char * message)
+{
+    // empty body, as this is a weak function, no action should be taken
 }
