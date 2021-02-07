@@ -36,7 +36,7 @@ typedef struct {
     int executed; /*!< Total tests executed */
     int failures; /*!< Total tests failed */
     int checks; /*!< Total test asserts executed */
-    int failed; /*!< did the current test fail */
+    int flagFailed; /*!< did the current test fail */
 } minunitState;
 
 /**
@@ -125,7 +125,7 @@ void minunitReport(const char * message);
 #define minUnitCheck(test) MU__SAFE_BLOCK(\
     testResults->checks++;\
     if (!(test)) {\
-        testResults->failed = 1;\
+        testResults->flagFailed = 1;\
         minunitReport("\n" __FILE__ ":" TOSTRING(__LINE__) " failed: " TOSTRING(test) "\n");\
         return;\
     }\
@@ -140,7 +140,7 @@ void minunitReport(const char * message);
  */
 #define minUnitFail() MU__SAFE_BLOCK(\
     testResults->checks++;\
-    testResults->failed = 1;\
+    testResults->flagFailed = 1;\
     return;\
 )
 

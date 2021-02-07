@@ -27,9 +27,9 @@ int minunitRun(void)
     minunitTestState.checks = 0;
     for(int i = 0; i < minunitTestCount; i++)
     {
-        minunitTestState.failed = 0;
+        minunitTestState.flagFailed = 0;
         minunitTestsTable[i](&minunitTestState);
-        if(minunitTestState.failed != 0)
+        if(minunitTestState.flagFailed != 0)
         {
             minunitTestState.failures++;
         }
