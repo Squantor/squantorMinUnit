@@ -34,7 +34,9 @@ int minunitRun(void)
             minunitTestState.failures++;
         }
         minunitTestState.executed++;
+        #ifndef MINUNIT_REPORT_DISABLE
         minunitReport("\n");
+        #endif
     }
     return 0;
 }

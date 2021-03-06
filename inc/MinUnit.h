@@ -122,6 +122,8 @@ void minunitReport(const char * message);
  * ```
  * @param[in] test Check to perform
  */
+
+#ifndef MINUNIT_REPORT_DISABLE
 #define minUnitCheck(test) MU__SAFE_BLOCK(\
     testResults->checks++;\
     if (!(test)) {\
@@ -134,6 +136,16 @@ void minunitReport(const char * message);
         minunitReport(".");\
     }\
 )
+#else
+#define minUnitCheck(test) MU__SAFE_BLOCK(\
+    testResults->checks++;\
+    if (!(test)) {\
+        testResults->flagFailed = 1;\
+        return;\
+    }\
+)
+#endif
+
 
 /**
  * \brief automatically fail test
