@@ -6,16 +6,20 @@
 #endif
 
 
-void (*minunitTestsTable[MINUNIT_MAX_TESTS])(minunitState *testResults);
+minunitTestEntry minunitTestsTable[MINUNIT_MAX_TESTS];
 int minunitTestCount = 0;
 
 minunitState minunitTestState;
 
-void minunitAddTest(void (*autoreg_func)(minunitState *testResults))
+void minunitAddTest(void (*testBody)(minunitState *testResults),
+    void (*testSetup)(void),
+    void (*testTeardown)(void))
 {
     if(minunitTestCount < MINUNIT_MAX_TESTS-1)
     {
-        minunitTestsTable[minunitTestCount] = autoreg_func;
+        minunitTestsTable[minunitTestCount].testBody = testBody;
+        minunitTestsTable[minunitTestCount].testSetup = testSetup;
+        minunitTestsTable[minunitTestCount].testTeardown = testTeardown;
         minunitTestCount++;
     }
 }
@@ -28,11 +32,13 @@ int minunitRun(void)
     for(int i = 0; i < minunitTestCount; i++)
     {
         minunitTestState.flagFailed = 0;
-        minunitTestsTable[i](&minunitTestState);
+        if(minunitTestsTable[i].testSetup != NULL)
+            minunitTestsTable[i].testSetup();
+        minunitTestsTable[i].testBody(&minunitTestState);
+        if(minunitTestsTable[i].testTeardown != NULL)
+            minunitTestsTable[i].testTeardown();
         if(minunitTestState.flagFailed != 0)
-        {
             minunitTestState.failures++;
-        }
         minunitTestState.executed++;
         #ifndef MINUNIT_REPORT_DISABLE
         minunitReport("\n");

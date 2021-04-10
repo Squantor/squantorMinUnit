@@ -40,21 +40,29 @@ typedef struct {
 } minunitState;
 
 /**
+ * \brief Test instance entry
+ */
+typedef struct {
+    void (*testBody)(minunitState *testResults);
+    void (*testSetup)(void);
+    void (*testTeardown)(void);
+} minunitTestEntry;
+
+/**
  * \brief Macro to register a test
  * 
  * Helper macro to register a test with minunit
- * @param[in]  name   Name of the test
+ * @param[in]  name         Name of the test
+ * @param[in]  setupFunc    test setup function, NULL for no setup
+ * @param[in]  teardownFunc test setup function, NULL for no setup
  */
-#define MINUNIT_ADD(name)\
+#define MINUNIT_ADD(name, setupFunc, teardownFunc)\
     static void minunit_##name(minunitState *testResults);\
     static void __attribute__((constructor)) __construct_minunit_##name(void) {\
-        minunitAddTest(minunit_##name);\
+        minunitAddTest(minunit_##name, setupFunc, teardownFunc);\
     }\
     static void minunit_##name(minunitState *testResults)
 
-
-extern void (*minunitTestsTable[])(minunitState *testResults); /*!< table of tests to execute */
-extern int minunitTestCount; /*!< Counter of available tests */
 extern minunitState minunitTestState; /*!< minunit global state */
 
 /**
@@ -62,9 +70,13 @@ extern minunitState minunitTestState; /*!< minunit global state */
  * 
  * Used internally by the macro MINUNIT_ADD
  * 
- * @param[in]  autoreg_func   Function pointer to the actual test
+ * @param[in]  testBody     Function pointer to the actual test
+ * @param[in]  testSetup    Function pointer to the test setup 
+ * @param[in]  testTeardown Function pointer to the test teardown
  */
-void minunitAddTest(void (*autoreg_func)(minunitState *testResults));
+void minunitAddTest(void (*testBody)(minunitState *testResults),
+    void (*testSetup)(void),
+    void (*testTeardown)(void));
 
 /**
  * \brief function execute all tests
