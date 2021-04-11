@@ -55,7 +55,7 @@ typedef struct {
  * @param[in]  name         Name of the test setup function
  */
 #define MINUNIT_SETUP(name)\
-    static void name(minunitState *testResults)
+    void name(minunitState *testResults)
 
 /**
  * \brief Macro to define a test teardown function
@@ -64,7 +64,7 @@ typedef struct {
  * @param[in]  name         Name of the test teardown function
  */
 #define MINUNIT_TEARDOWN(name)\
-    static void name(minunitState *testResults)
+    void name(minunitState *testResults)
 
 
 /**
