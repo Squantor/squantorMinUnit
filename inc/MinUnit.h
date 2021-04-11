@@ -44,9 +44,28 @@ typedef struct {
  */
 typedef struct {
     void (*testBody)(minunitState *testResults);
-    void (*testSetup)(void);
-    void (*testTeardown)(void);
+    void (*testSetup)(minunitState *testResults);
+    void (*testTeardown)(minunitState *testResults);
 } minunitTestEntry;
+
+/**
+ * \brief Macro to define a test setup function
+ * 
+ * Helper macro to create a function definition of a test setup
+ * @param[in]  name         Name of the test setup function
+ */
+#define MINUNIT_SETUP(name)\
+    static void name(minunitState *testResults)
+
+/**
+ * \brief Macro to define a test teardown function
+ * 
+ * Helper macro to create a function definition of a test teardown
+ * @param[in]  name         Name of the test teardown function
+ */
+#define MINUNIT_TEARDOWN(name)\
+    static void name(minunitState *testResults)
+
 
 /**
  * \brief Macro to register a test
@@ -75,8 +94,8 @@ extern minunitState minunitTestState; /*!< minunit global state */
  * @param[in]  testTeardown Function pointer to the test teardown
  */
 void minunitAddTest(void (*testBody)(minunitState *testResults),
-    void (*testSetup)(void),
-    void (*testTeardown)(void));
+    void (*testSetup)(minunitState *testResults),
+    void (*testTeardown)(minunitState *testResults));
 
 /**
  * \brief function execute all tests

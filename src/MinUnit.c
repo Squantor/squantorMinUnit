@@ -12,8 +12,8 @@ int minunitTestCount = 0;
 minunitState minunitTestState;
 
 void minunitAddTest(void (*testBody)(minunitState *testResults),
-    void (*testSetup)(void),
-    void (*testTeardown)(void))
+    void (*testSetup)(minunitState *testResults),
+    void (*testTeardown)(minunitState *testResults))
 {
     if(minunitTestCount < MINUNIT_MAX_TESTS-1)
     {
@@ -33,12 +33,17 @@ int minunitRun(void)
     {
         minunitTestState.flagFailed = 0;
         if(minunitTestsTable[i].testSetup != NULL)
-            minunitTestsTable[i].testSetup();
-        minunitTestsTable[i].testBody(&minunitTestState);
-        if(minunitTestsTable[i].testTeardown != NULL)
-            minunitTestsTable[i].testTeardown();
+            minunitTestsTable[i].testSetup(&minunitTestState);
         if(minunitTestState.flagFailed != 0)
             minunitTestState.failures++;
+        else
+        {
+            minunitTestsTable[i].testBody(&minunitTestState);
+            if(minunitTestState.flagFailed != 0)
+                minunitTestState.failures++;
+            if(minunitTestsTable[i].testTeardown != NULL)
+                minunitTestsTable[i].testTeardown(&minunitTestState);  
+        }
         minunitTestState.executed++;
         #ifndef MINUNIT_REPORT_DISABLE
         minunitReport("\n");
