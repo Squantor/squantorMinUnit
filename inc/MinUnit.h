@@ -177,6 +177,14 @@ void minunitReport(const char * message);
 )
 #endif
 
+/**
+ * \brief automatically pass test
+ * 
+ * Automatically passing test, useful for the teardown and setup functions
+ */
+#define minUnitPass() MU__SAFE_BLOCK(\
+    testResults->checks++;\
+)
 
 /**
  * \brief automatically fail test
