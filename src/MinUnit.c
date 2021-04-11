@@ -31,18 +31,18 @@ int minunitRun(void)
     minunitTestState.checks = 0;
     for(int i = 0; i < minunitTestCount; i++)
     {
-        minunitTestState.flagFailed = 0;
         if(minunitTestsTable[i].testSetup != NULL)
             minunitTestsTable[i].testSetup(&minunitTestState);
-        if(minunitTestState.flagFailed != 0)
-            minunitTestState.failures++;
-        else
+        if(minunitTestState.flagFailed == 0)
         {
             minunitTestsTable[i].testBody(&minunitTestState);
-            if(minunitTestState.flagFailed != 0)
-                minunitTestState.failures++;
             if(minunitTestsTable[i].testTeardown != NULL)
                 minunitTestsTable[i].testTeardown(&minunitTestState);  
+        }
+        if(minunitTestState.flagFailed != 0)
+        {
+            minunitTestState.flagFailed = 0;
+            minunitTestState.failures++;
         }
         minunitTestState.executed++;
         #ifndef MINUNIT_REPORT_DISABLE
