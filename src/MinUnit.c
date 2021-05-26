@@ -24,7 +24,13 @@ void minunitAddTest(void (*testBody)(minunitState *testResults),
     }
 }
 
-int minunitRun(void)
+int minunitRun(void) 
+{
+    return minunitRunCallback(NULL);
+}
+
+
+int minunitRunCallback(intraTestCallback callback)
 {
     minunitTestState.executed = 0;
     minunitTestState.failures = 0;
@@ -45,6 +51,8 @@ int minunitRun(void)
                 minunitTestsTable[i].testTeardown(&minunitTestState);  
         }
         minunitTestState.executed++;
+        if(callback != NULL)
+            callback();
         #ifndef MINUNIT_REPORT_DISABLE
         minunitReport("\n");
         #endif

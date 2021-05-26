@@ -49,6 +49,11 @@ typedef struct {
 } minunitTestEntry;
 
 /**
+ * \brief Test instance entry
+ */
+typedef void (*intraTestCallback)(void);
+
+/**
  * \brief Macro to define a test setup function
  * 
  * Helper macro to create a function definition of a test setup
@@ -103,6 +108,25 @@ void minunitAddTest(void (*testBody)(minunitState *testResults),
  * Executes all tests registered with MINUNIT_ADD
  */
 int minunitRun(void);
+
+/**
+ * \brief function execute all tests with a in between test callback
+ * 
+ * Executes all tests registered with MINUNIT_ADD and calls between each test
+ * a callback given by the callback argument.
+ * 
+ * @param[in]   callback    Function pointer to call in between tests
+ */
+int minunitRunCallback(intraTestCallback callback);
+
+/**
+ * \brief function execute all tests with a in between test callback
+ * 
+ * Executes all tests registered with MINUNIT_ADD
+ * 
+ * @param[in]   callback    Function pointer to call in between tests
+ */
+int minunitRunCallback(intraTestCallback callback);
 
 /**
  * \brief function to report messages
