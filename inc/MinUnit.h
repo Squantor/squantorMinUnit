@@ -43,17 +43,17 @@ typedef struct {
  * \brief Test instance entry
  */
 typedef struct {
-    void (*testBody)(minunitState *testResults);
-    void (*testSetup)(minunitState *testResults);
-    void (*testTeardown)(minunitState *testResults);
+    void (*testBody)(minunitState *testResults); /*!< code to test */
+    void (*testSetup)(minunitState *testResults); /*!< setup to run before the test */
+    void (*testTeardown)(minunitState *testResults); /*!< teardown to run after the test */
 } minunitTestEntry;
 
 /**
  * \brief Table of tests
  */
 typedef struct {
-    int testcount;
-    minunitTestEntry tests[MINUNIT_MAX_TESTS];
+    int testcount;  /*!< amount of tests in the table */
+    minunitTestEntry tests[MINUNIT_MAX_TESTS]; /*!< table of tests */
 } minunitTestsTable;
 
 /**
