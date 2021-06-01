@@ -49,6 +49,14 @@ typedef struct {
 } minunitTestEntry;
 
 /**
+ * \brief Table of tests
+ */
+typedef struct {
+    int testcount;
+    minunitTestEntry tests[MINUNIT_MAX_TESTS];
+} minunitTestsTable;
+
+/**
  * \brief Test instance entry
  */
 typedef void (*intraTestCallback)(void);
@@ -72,6 +80,9 @@ typedef void (*intraTestCallback)(void);
     void name(minunitState *testResults)
 
 
+extern minunitState minunitTestState; /*!< minunit global state */
+extern minunitTestsTable defaultTestTable; /*!< default table of tests */
+
 /**
  * \brief Macro to register a test
  * 
@@ -83,22 +94,23 @@ typedef void (*intraTestCallback)(void);
 #define MINUNIT_ADD(name, setupFunc, teardownFunc)\
     static void minunit_##name(minunitState *testResults);\
     static void __attribute__((constructor)) __construct_minunit_##name(void) {\
-        minunitAddTest(minunit_##name, setupFunc, teardownFunc);\
+        minunitAddTest(&defaultTestTable, minunit_##name, setupFunc, teardownFunc);\
     }\
     static void minunit_##name(minunitState *testResults)
-
-extern minunitState minunitTestState; /*!< minunit global state */
 
 /**
  * \brief function to add test to the test table
  * 
  * Used internally by the macro MINUNIT_ADD
  * 
+ * @param[in]  table        Pointer to a table of tests
  * @param[in]  testBody     Function pointer to the actual test
  * @param[in]  testSetup    Function pointer to the test setup 
  * @param[in]  testTeardown Function pointer to the test teardown
  */
-void minunitAddTest(void (*testBody)(minunitState *testResults),
+void minunitAddTest(
+    minunitTestsTable *table,
+    void (*testBody)(minunitState *testResults),
     void (*testSetup)(minunitState *testResults),
     void (*testTeardown)(minunitState *testResults));
 
@@ -110,7 +122,7 @@ void minunitAddTest(void (*testBody)(minunitState *testResults),
 int minunitRun(void);
 
 /**
- * \brief function execute all tests with a in between test callback
+ * \brief function execute all tests with a callback inbetween
  * 
  * Executes all tests registered with MINUNIT_ADD and calls between each test
  * a callback given by the callback argument.
@@ -120,13 +132,15 @@ int minunitRun(void);
 int minunitRunCallback(intraTestCallback callback);
 
 /**
- * \brief function execute all tests with a in between test callback
+ * \brief function execute all tests with a in between test callback from a given table
  * 
- * Executes all tests registered with MINUNIT_ADD
+ * Executes all tests passed along in the tests table and calls between each test
+ * a callback given by the callback argument.
  * 
+ * @param[in]   table       Table of tests to execute
  * @param[in]   callback    Function pointer to call in between tests
  */
-int minunitRunCallback(intraTestCallback callback);
+int minunitRunTableCallback(minunitTestsTable *table, intraTestCallback callback);
 
 /**
  * \brief function to report messages

@@ -6,44 +6,48 @@
 #endif
 
 
-minunitTestEntry minunitTestsTable[MINUNIT_MAX_TESTS];
-int minunitTestCount = 0;
+minunitTestsTable defaultTestTable = {0};
 
 minunitState minunitTestState;
 
-void minunitAddTest(void (*testBody)(minunitState *testResults),
+void minunitAddTest( minunitTestsTable *table,
+    void (*testBody)(minunitState *testResults),
     void (*testSetup)(minunitState *testResults),
     void (*testTeardown)(minunitState *testResults))
 {
-    if(minunitTestCount < MINUNIT_MAX_TESTS-1)
+    if(table->testcount < MINUNIT_MAX_TESTS-1)
     {
-        minunitTestsTable[minunitTestCount].testBody = testBody;
-        minunitTestsTable[minunitTestCount].testSetup = testSetup;
-        minunitTestsTable[minunitTestCount].testTeardown = testTeardown;
-        minunitTestCount++;
+        table->tests[table->testcount].testBody = testBody;
+        table->tests[table->testcount].testSetup = testSetup;
+        table->tests[table->testcount].testTeardown = testTeardown;
+        table->testcount++;
     }
 }
 
 int minunitRun(void) 
 {
-    return minunitRunCallback(NULL);
+    return minunitRunTableCallback(&defaultTestTable, NULL);
 }
 
-
 int minunitRunCallback(intraTestCallback callback)
+{
+    return minunitRunTableCallback(&defaultTestTable, callback);
+}
+
+int minunitRunTableCallback(minunitTestsTable *table, intraTestCallback callback)
 {
     minunitTestState.executed = 0;
     minunitTestState.failures = 0;
     minunitTestState.checks = 0;
-    for(int i = 0; i < minunitTestCount; i++)
+    for(int i = 0; i < table->testcount; i++)
     {
-        if(minunitTestsTable[i].testSetup != NULL)
-            minunitTestsTable[i].testSetup(&minunitTestState);
+        if(table->tests[i].testSetup != NULL)
+            table->tests[i].testSetup(&minunitTestState);
         if(minunitTestState.flagFailed == 0)
         {
-            minunitTestsTable[i].testBody(&minunitTestState);
-            if(minunitTestsTable[i].testTeardown != NULL)
-                minunitTestsTable[i].testTeardown(&minunitTestState);  
+            table->tests[i].testBody(&minunitTestState);
+            if(table->tests[i].testTeardown != NULL)
+                table->tests[i].testTeardown(&minunitTestState);  
         }
         if(minunitTestState.flagFailed != 0)
         {
