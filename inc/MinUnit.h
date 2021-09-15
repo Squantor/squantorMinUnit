@@ -29,6 +29,11 @@
 extern "C" {
 #endif
 
+#ifndef MINUNIT_MAX_TESTS
+#warning No maximum number of tests defined, defaulting to 100
+#define MINUNIT_MAX_TESTS 100
+#endif
+
 /**
  * \brief Datastructure defining test state
  */

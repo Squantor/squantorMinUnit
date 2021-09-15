@@ -1,11 +1,5 @@
 #include <MinUnit.h>
 
-#ifndef MINUNIT_MAX_TESTS
-#warning No maximum number of tests defined, defaulting to 100
-#define MINUNIT_MAX_TESTS 100
-#endif
-
-
 minunitTestsTable defaultTestTable = {0};
 
 minunitState minunitTestState;
