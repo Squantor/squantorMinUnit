@@ -230,7 +230,7 @@ void minunitFailCallback();
 /**
  * \brief automatically fail test
  */
-#define minUnitFail() MU__SAFE_BLOCK(testResults->checks++; testResults->flagFailed = 1; return;)
+#define minUnitFail(test) MU__SAFE_BLOCK(testResults->checks++; minunitFailCallback(); testResults->flagFailed = 1; return;)
 
 #ifdef __cplusplus
 }
