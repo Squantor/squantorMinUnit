@@ -3,11 +3,19 @@
 # Copyright (c) 2020-2020 Bart Bilos
 # For conditions of distribution and use, see LICENSE file
 
-
-# MinUnit library settings
+# squantorMinUnit library files
 #
-# Version: 20200814
+# Version: 20220715
 
-# library files and includes
-INCLUDES += -IsquantorMinUnit/inc
-FILES += squantorMinUnit/src/MinUnit.c
+# library settings
+NAME := squantorMinUnit
+
+# current makefile base dir relative to Makefile
+LIB_DIR := $(patsubst %/,%,$(dir $(lastword $(MAKEFILE_LIST))))
+
+$(NAME)_LIB_FILES := $(LIB_DIR)/src/MinUnit.c
+
+$(NAME)_LIB_INCLUDES := -I$(LIB_DIR)/inc
+
+# --- nothing user definable below ---
+LIBRARIES += $(NAME)
