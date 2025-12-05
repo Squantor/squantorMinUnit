@@ -209,10 +209,39 @@ void minunitFailCallback();
       minunitFailCallback();                                                               \
       testResults->flagFailed = 1;                                                         \
       minunitReport("\n" __FILE__ ":" TOSTRING(__LINE__) " failed: " TOSTRING(test) "\n"); \
-      return;                                                                              \
     } else { minunitReport("."); })
 #else
 #define minUnitCheck(test)                             \
+  MU__SAFE_BLOCK(testResults->checks++; if (!(test)) { \
+    minunitFailCallback();                             \
+    testResults->flagFailed = 1;                       \
+  })
+#endif
+
+/**
+ * \brief Executes a assert
+ *
+ * Executes a check, the argument needs to be true for the check to pass.
+ * ```
+ * MU_TEST(myTest)
+ * {
+ *     mu_check(true == true);
+ * }
+ * ```
+ * @param[in] test Check to perform
+ */
+
+#ifndef MINUNIT_REPORT_DISABLE
+#define minUnitAssert(test)                                                                \
+  MU__SAFE_BLOCK(                                                                          \
+    testResults->checks++; if (!(test)) {                                                  \
+      minunitFailCallback();                                                               \
+      testResults->flagFailed = 1;                                                         \
+      minunitReport("\n" __FILE__ ":" TOSTRING(__LINE__) " failed: " TOSTRING(test) "\n"); \
+      return;                                                                              \
+    } else { minunitReport("."); })
+#else
+#define minUnitAssert(test)                            \
   MU__SAFE_BLOCK(testResults->checks++; if (!(test)) { \
     minunitFailCallback();                             \
     testResults->flagFailed = 1;                       \
