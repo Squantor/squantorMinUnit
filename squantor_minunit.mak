@@ -13,7 +13,7 @@ NAME := squantorMinUnit
 # current makefile base dir relative to Makefile
 LIB_DIR := $(patsubst %/,%,$(dir $(lastword $(MAKEFILE_LIST))))
 
-$(NAME)_LIB_FILES := $(LIB_DIR)/src/MinUnit.c
+$(NAME)_LIB_FILES := $(LIB_DIR)/src/minunit.c
 
 $(NAME)_LIB_INCLUDES := -I$(LIB_DIR)/inc
 
