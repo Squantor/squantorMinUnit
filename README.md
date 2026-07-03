@@ -1,3 +1,5 @@
+# Migrated
+This project has been migrated to [Codeberg](https://codeberg.org/Squantor/squantorMinUnit). Please file any issues and pull requests there.
 # Minimal Unittest framework for C and C++
 Yet another minimal unittest framework for C and C++, but this one does not depend on anything. The reason for this is to allow unittests to be run on an embedded target. Adapted from modified from [Minunit](https://github.com/siu/minunit).
 ## Usage
