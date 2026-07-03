@@ -6,7 +6,7 @@
  *
  * @file minunit.c
  * @brief Minimal C/C++ unittesting framework
- * @version 20260206
+ * @version 20260703
  *
  * Minimal C++ unittesting framework, based on:
  * https://github.com/siu/minunit
@@ -14,6 +14,7 @@
  * https://github.com/ollelogdahl/ihct
  */
 #include <minunit.h>
+#include <string.h>
 
 Minunit_tests_table default_test_table = {0};
 

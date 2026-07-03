@@ -6,7 +6,7 @@
  *
  * @file minunit.h
  * @brief Minimal C/C++ unittesting framework
- * @version 20260206
+ * @version 20260703
  *
  * Minimal C++ unittesting framework, based on:
  * https://github.com/siu/minunit
@@ -153,9 +153,9 @@ void minunit_fail_callback();
  * @param[in]  block   Block of statements that will be wrapped in a ```do{
  * }while(0)``` block.
  */
-#define MU__SAFE_BLOCK(block) \
-  do {                        \
-    block                     \
+#define MU_SAFE_BLOCK(block) \
+  do {                       \
+    block                    \
   } while (0)
 
 /**
@@ -186,7 +186,7 @@ void minunit_fail_callback();
  */
 #ifndef MINUNIT_REPORT_DISABLE
 #define MINUNIT_ASSERT(test)                                                                \
-  MU__SAFE_BLOCK(                                                                           \
+  MU_SAFE_BLOCK(                                                                            \
     test_results->checks++; if (!(test)) {                                                  \
       minunit_fail_callback();                                                              \
       test_results->flag_fail = 1;                                                          \
@@ -194,11 +194,11 @@ void minunit_fail_callback();
       return;                                                                               \
     } else { minunit_report("."); })
 #else
-#define MINUNIT_ASSERT(test)                            \
-  MU__SAFE_BLOCK(test_results->checks++; if (!(test)) { \
-    minunit_fail_callback();                            \
-    test_results->flag_fail = 1;                        \
-    return;                                             \
+#define MINUNIT_ASSERT(test)                           \
+  MU_SAFE_BLOCK(test_results->checks++; if (!(test)) { \
+    minunit_fail_callback();                           \
+    test_results->flag_fail = 1;                       \
+    return;                                            \
   })
 #endif
 
@@ -215,30 +215,31 @@ void minunit_fail_callback();
  */
 #ifndef MINUNIT_REPORT_DISABLE
 #define MINUNIT_CHECK(test)                                                                 \
-  MU__SAFE_BLOCK(                                                                           \
+  MU_SAFE_BLOCK(                                                                            \
     test_results->checks++; if (!(test)) {                                                  \
       minunit_fail_callback();                                                              \
       test_results->flag_fail = 1;                                                          \
       minunit_report("\n" __FILE__ ":" TOSTRING(__LINE__) " failed: " TOSTRING(test) "\n"); \
     } else { minunit_report("."); })
 #else
-#define MINUNIT_CHECK(test)                             \
-  MU__SAFE_BLOCK(test_results->checks++; if (!(test)) { \
-    minunit_fail_callback();                            \
-    test_results->flag_fail = 1;                        \
+#define MINUNIT_CHECK(test)                            \
+  MU_SAFE_BLOCK(test_results->checks++; if (!(test)) { \
+    minunit_fail_callback();                           \
+    test_results->flag_fail = 1;                       \
   })
 #endif
 
 /**
  * @brief automatically pass test
  * Automatically passing test, useful for the teardown and setup functions
+ * Helps supress unused variable warnings too
  */
-#define MINUNIT_PASS() MU__SAFE_BLOCK(test_results->checks++;)
+#define MINUNIT_PASS() MU_SAFE_BLOCK(test_results->checks++;)
 
 /**
  * @brief automatically fail test
  */
-#define MINUNIT_FAIL() MU__SAFE_BLOCK(test_results->checks++; minunit_fail_callback(); test_results->flag_fail = 1; return;)
+#define MINUNIT_FAIL() MU_SAFE_BLOCK(test_results->checks++; minunit_fail_callback(); test_results->flag_fail = 1; return;)
 
 #ifdef __cplusplus
 }
